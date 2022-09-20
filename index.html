@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>AJAX - Weather</title>
+	<style>
+		*
+		{
+			margin:0;
+			padding: 0;
+			box-sizing: border-box; 
+			font-family:system-ui;
+		}
+		body
+		{
+			min-height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		main
+		{
+			display: flex;
+			flex-direction: column;
+			padding: 20px;
+			box-shadow: 2px 2px 10px rgba(0,0,0,.2), 1px 1px 5px gray inset;
+			width: 60%;
+			border-radius: 10px;
+		}
+
+		main h2
+		{
+			margin-left: 2%;
+			margin-bottom: 4%;
+		}
+
+
+		.wrap
+		{
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+		}
+		.wrap input
+		{
+			width: 80%;
+			height: 40px;
+			border:none;
+			box-shadow: 0 0 1px gray;
+			padding-left: 10px;
+		}
+		
+		.wrap button
+		{
+			height: 40px;
+			padding: 0 20px;
+			border:none;
+			box-shadow: 0 0 1px gray;
+			background-color: rgba(0,0,0,.7);
+			color:white;
+
+		}
+
+		main .weather_data
+		{
+			width: 95%;
+			padding: 20px;
+			display:flex;
+			justify-content: space-around;
+			align-items: center; 
+			background-color: rgba(0,0,0,.76);
+			color:white;
+			flex-wrap: wrap;
+			margin: 20px auto;
+			border-radius: 10px;
+		}
+
+
+	}
+
+
+	</style>
+</head>
+<body>
+		
+	<main>
+		
+		<h2>CHECK WEATHER</h2>
+		<div class="wrap">
+			<input required type="text" placeholder="City name">
+			<button id="btn">Check</button>
+		</div>
+
+		<div class="weather_data">
+			<h1 id="name">GUWAHATI</h1>
+			<img id="condition" src="http://openweathermap.org/img/wn/10d@2x.png" alt="">
+			<h3 id="temp">22 <sup>o</sup>C</h3>
+		</div>
+
+	</main>
+		
+	
+</body>
+
+	<script>
+		
+		let name=document.querySelector("#name");
+		let condition=document.querySelector("#condition");
+		let temp=document.querySelector("#temp");
+
+		document.querySelector("#btn").addEventListener('click',getWeather);
+	
+		document.querySelector(".wrap input").onkeydown=(e)=>
+		{
+			if(e.key=="Enter")
+				getWeather();
+		}
+
+
+		function getWeather()
+		{	
+			let inp=document.querySelector(".wrap input").value;
+			if(inp!=undefined)
+			{
+
+				let xhr=new XMLHttpRequest();
+
+				xhr.onreadystatechange=function()
+				{
+
+					if(this.readyState==4 && this.status==200)
+					{
+
+						let data=JSON.parse(this.responseText);
+						name.innerText=data.name;
+						condition.src=`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+						temp.innerHTML=data.main.temp+" <sup>o</sup>C";
+					}
+					else if(this.status==400 || this.status==404){
+						window.location="http://localhost/index.html";
+
+					}
+
+				}
+
+
+				let URL="https://api.openweathermap.org/data/2.5/weather?q="+inp+"&appid=a50125806c9c55f6a7582def6ba201a8&units=metric";
+				xhr.open("GET",URL,true);
+				xhr.send();
+			}	
+		}		
+	</script>
+
+
+</html>
